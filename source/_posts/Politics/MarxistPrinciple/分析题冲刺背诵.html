@@ -1,0 +1,531 @@
+<!doctype html>
+<html>
+<head>
+<meta charset='UTF-8'><meta name='viewport' content='width=device-width initial-scale=1'>
+
+<style type='text/css'>html {overflow-x: initial !important;}:root { --bg-color:#ffffff; --text-color:#333333; --select-text-bg-color:#B5D6FC; --select-text-font-color:auto; --monospace:"Lucida Console",Consolas,"Courier",monospace; --title-bar-height:20px; }
+.mac-os-11 { --title-bar-height:28px; }
+html { font-size: 14px; background-color: var(--bg-color); color: var(--text-color); font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+body { margin: 0px; padding: 0px; height: auto; inset: 0px; font-size: 1rem; line-height: 1.42857; overflow-x: hidden; background: inherit; tab-size: 4; }
+iframe { margin: auto; }
+a.url { word-break: break-all; }
+a:active, a:hover { outline: 0px; }
+.in-text-selection, ::selection { text-shadow: none; background: var(--select-text-bg-color); color: var(--select-text-font-color); }
+#write { margin: 0px auto; height: auto; width: inherit; word-break: normal; overflow-wrap: break-word; position: relative; white-space: normal; overflow-x: visible; padding-top: 36px; }
+#write.first-line-indent p { text-indent: 2em; }
+#write.first-line-indent li p, #write.first-line-indent p * { text-indent: 0px; }
+#write.first-line-indent li { margin-left: 2em; }
+.for-image #write { padding-left: 8px; padding-right: 8px; }
+body.typora-export { padding-left: 30px; padding-right: 30px; }
+.typora-export .footnote-line, .typora-export li, .typora-export p { white-space: pre-wrap; }
+.typora-export .task-list-item input { pointer-events: none; }
+@media screen and (max-width: 500px) {
+  body.typora-export { padding-left: 0px; padding-right: 0px; }
+  #write { padding-left: 20px; padding-right: 20px; }
+  .CodeMirror-sizer { margin-left: 0px !important; }
+  .CodeMirror-gutters { display: none !important; }
+}
+#write li > figure:last-child { margin-bottom: 0.5rem; }
+#write ol, #write ul { position: relative; }
+img { max-width: 100%; vertical-align: middle; image-orientation: from-image; }
+button, input, select, textarea { color: inherit; font: inherit; }
+input[type="checkbox"], input[type="radio"] { line-height: normal; padding: 0px; }
+*, ::after, ::before { box-sizing: border-box; }
+#write h1, #write h2, #write h3, #write h4, #write h5, #write h6, #write p, #write pre { width: inherit; }
+#write h1, #write h2, #write h3, #write h4, #write h5, #write h6, #write p { position: relative; }
+p { line-height: inherit; }
+h1, h2, h3, h4, h5, h6 { break-after: avoid-page; break-inside: avoid; orphans: 4; }
+p { orphans: 4; }
+h1 { font-size: 2rem; }
+h2 { font-size: 1.8rem; }
+h3 { font-size: 1.6rem; }
+h4 { font-size: 1.4rem; }
+h5 { font-size: 1.2rem; }
+h6 { font-size: 1rem; }
+.md-math-block, .md-rawblock, h1, h2, h3, h4, h5, h6, p { margin-top: 1rem; margin-bottom: 1rem; }
+.hidden { display: none; }
+.md-blockmeta { color: rgb(204, 204, 204); font-weight: 700; font-style: italic; }
+a { cursor: pointer; }
+sup.md-footnote { padding: 2px 4px; background-color: rgba(238, 238, 238, 0.7); color: rgb(85, 85, 85); border-radius: 4px; cursor: pointer; }
+sup.md-footnote a, sup.md-footnote a:hover { color: inherit; text-transform: inherit; text-decoration: inherit; }
+#write input[type="checkbox"] { cursor: pointer; width: inherit; height: inherit; }
+figure { overflow-x: auto; margin: 1.2em 0px; max-width: calc(100% + 16px); padding: 0px; }
+figure > table { margin: 0px; }
+tr { break-inside: avoid; break-after: auto; }
+thead { display: table-header-group; }
+table { border-collapse: collapse; border-spacing: 0px; width: 100%; overflow: auto; break-inside: auto; text-align: left; }
+table.md-table td { min-width: 32px; }
+.CodeMirror-gutters { border-right: 0px; background-color: inherit; }
+.CodeMirror-linenumber { user-select: none; }
+.CodeMirror { text-align: left; }
+.CodeMirror-placeholder { opacity: 0.3; }
+.CodeMirror pre { padding: 0px 4px; }
+.CodeMirror-lines { padding: 0px; }
+div.hr:focus { cursor: none; }
+#write pre { white-space: pre-wrap; }
+#write.fences-no-line-wrapping pre { white-space: pre; }
+#write pre.ty-contain-cm { white-space: normal; }
+.CodeMirror-gutters { margin-right: 4px; }
+.md-fences { font-size: 0.9rem; display: block; break-inside: avoid; text-align: left; overflow: visible; white-space: pre; background: inherit; position: relative !important; }
+.md-fences-adv-panel { width: 100%; margin-top: 10px; text-align: center; padding-top: 0px; padding-bottom: 8px; overflow-x: auto; }
+#write .md-fences.mock-cm { white-space: pre-wrap; }
+.md-fences.md-fences-with-lineno { padding-left: 0px; }
+#write.fences-no-line-wrapping .md-fences.mock-cm { white-space: pre; overflow-x: auto; }
+.md-fences.mock-cm.md-fences-with-lineno { padding-left: 8px; }
+.CodeMirror-line, twitterwidget { break-inside: avoid; }
+.footnotes { opacity: 0.8; font-size: 0.9rem; margin-top: 1em; margin-bottom: 1em; }
+.footnotes + .footnotes { margin-top: 0px; }
+.md-reset { margin: 0px; padding: 0px; border: 0px; outline: 0px; vertical-align: top; background: 0px 0px; text-decoration: none; text-shadow: none; float: none; position: static; width: auto; height: auto; white-space: nowrap; cursor: inherit; -webkit-tap-highlight-color: transparent; line-height: normal; font-weight: 400; text-align: left; box-sizing: content-box; direction: ltr; }
+li div { padding-top: 0px; }
+blockquote { margin: 1rem 0px; }
+li .mathjax-block, li p { margin: 0.5rem 0px; }
+li blockquote { margin: 1rem 0px; }
+li { margin: 0px; position: relative; }
+blockquote > :last-child { margin-bottom: 0px; }
+blockquote > :first-child, li > :first-child { margin-top: 0px; }
+.footnotes-area { color: rgb(136, 136, 136); margin-top: 0.714rem; padding-bottom: 0.143rem; white-space: normal; }
+#write .footnote-line { white-space: pre-wrap; }
+@media print {
+  body, html { border: 1px solid transparent; height: 99%; break-after: avoid; break-before: avoid; font-variant-ligatures: no-common-ligatures; }
+  #write { margin-top: 0px; padding-top: 0px; border-color: transparent !important; }
+  .typora-export * { -webkit-print-color-adjust: exact; }
+  .typora-export #write { break-after: avoid; }
+  .typora-export #write::after { height: 0px; }
+  .is-mac table { break-inside: avoid; }
+  .typora-export-show-outline .typora-export-sidebar { display: none; }
+}
+.footnote-line { margin-top: 0.714em; font-size: 0.7em; }
+a img, img a { cursor: pointer; }
+pre.md-meta-block { font-size: 0.8rem; min-height: 0.8rem; white-space: pre-wrap; background: rgb(204, 204, 204); display: block; overflow-x: hidden; }
+p > .md-image:only-child:not(.md-img-error) img, p > img:only-child { display: block; margin: auto; }
+#write.first-line-indent p > .md-image:only-child:not(.md-img-error) img { left: -2em; position: relative; }
+p > .md-image:only-child { display: inline-block; width: 100%; }
+#write .MathJax_Display { margin: 0.8em 0px 0px; }
+.md-math-block { width: 100%; }
+.md-math-block:not(:empty)::after { display: none; }
+.MathJax_ref { fill: currentcolor; }
+[contenteditable="true"]:active, [contenteditable="true"]:focus, [contenteditable="false"]:active, [contenteditable="false"]:focus { outline: 0px; box-shadow: none; }
+.md-task-list-item { position: relative; list-style-type: none; }
+.task-list-item.md-task-list-item { padding-left: 0px; }
+.md-task-list-item > input { position: absolute; top: 0px; left: 0px; margin-left: -1.2em; margin-top: calc(1em - 10px); border: none; }
+.math { font-size: 1rem; }
+.md-toc { min-height: 3.58rem; position: relative; font-size: 0.9rem; border-radius: 10px; }
+.md-toc-content { position: relative; margin-left: 0px; }
+.md-toc-content::after, .md-toc::after { display: none; }
+.md-toc-item { display: block; color: rgb(65, 131, 196); }
+.md-toc-item a { text-decoration: none; }
+.md-toc-inner:hover { text-decoration: underline; }
+.md-toc-inner { display: inline-block; cursor: pointer; }
+.md-toc-h1 .md-toc-inner { margin-left: 0px; font-weight: 700; }
+.md-toc-h2 .md-toc-inner { margin-left: 2em; }
+.md-toc-h3 .md-toc-inner { margin-left: 4em; }
+.md-toc-h4 .md-toc-inner { margin-left: 6em; }
+.md-toc-h5 .md-toc-inner { margin-left: 8em; }
+.md-toc-h6 .md-toc-inner { margin-left: 10em; }
+@media screen and (max-width: 48em) {
+  .md-toc-h3 .md-toc-inner { margin-left: 3.5em; }
+  .md-toc-h4 .md-toc-inner { margin-left: 5em; }
+  .md-toc-h5 .md-toc-inner { margin-left: 6.5em; }
+  .md-toc-h6 .md-toc-inner { margin-left: 8em; }
+}
+a.md-toc-inner { font-size: inherit; font-style: inherit; font-weight: inherit; line-height: inherit; }
+.footnote-line a:not(.reversefootnote) { color: inherit; }
+.md-attr { display: none; }
+.md-fn-count::after { content: "."; }
+code, pre, samp, tt { font-family: var(--monospace); }
+kbd { margin: 0px 0.1em; padding: 0.1em 0.6em; font-size: 0.8em; color: rgb(36, 39, 41); background: rgb(255, 255, 255); border: 1px solid rgb(173, 179, 185); border-radius: 3px; box-shadow: rgba(12, 13, 14, 0.2) 0px 1px 0px, rgb(255, 255, 255) 0px 0px 0px 2px inset; white-space: nowrap; vertical-align: middle; }
+.md-comment { color: rgb(162, 127, 3); opacity: 0.6; font-family: var(--monospace); }
+code { text-align: left; vertical-align: initial; }
+a.md-print-anchor { white-space: pre !important; border-width: initial !important; border-style: none !important; border-color: initial !important; display: inline-block !important; position: absolute !important; width: 1px !important; right: 0px !important; outline: 0px !important; background: 0px 0px !important; text-decoration: initial !important; text-shadow: initial !important; }
+.os-windows.monocolor-emoji .md-emoji { font-family: "Segoe UI Symbol", sans-serif; }
+.md-diagram-panel > svg { max-width: 100%; }
+[lang="flow"] svg, [lang="mermaid"] svg { max-width: 100%; height: auto; }
+[lang="mermaid"] .node text { font-size: 1rem; }
+table tr th { border-bottom: 0px; }
+video { max-width: 100%; display: block; margin: 0px auto; }
+iframe { max-width: 100%; width: 100%; border: none; }
+.highlight td, .highlight tr { border: 0px; }
+mark { background: rgb(255, 255, 0); color: rgb(0, 0, 0); }
+.md-html-inline .md-plain, .md-html-inline strong, mark .md-inline-math, mark strong { color: inherit; }
+.md-expand mark .md-meta { opacity: 0.3 !important; }
+mark .md-meta { color: rgb(0, 0, 0); }
+@media print {
+  .typora-export h1, .typora-export h2, .typora-export h3, .typora-export h4, .typora-export h5, .typora-export h6 { break-inside: avoid; }
+}
+.md-diagram-panel .messageText { stroke: none !important; }
+.md-diagram-panel .start-state { fill: var(--node-fill); }
+.md-diagram-panel .edgeLabel rect { opacity: 1 !important; }
+.md-fences.md-fences-math { font-size: 1em; }
+.md-fences-advanced:not(.md-focus) { padding: 0px; white-space: nowrap; border: 0px; }
+.md-fences-advanced:not(.md-focus) { background: inherit; }
+.typora-export-show-outline .typora-export-content { max-width: 1440px; margin: auto; display: flex; flex-direction: row; }
+.typora-export-sidebar { width: 300px; font-size: 0.8rem; margin-top: 80px; margin-right: 18px; }
+.typora-export-show-outline #write { --webkit-flex:2; flex: 2 1 0%; }
+.typora-export-sidebar .outline-content { position: fixed; top: 0px; max-height: 100%; overflow: hidden auto; padding-bottom: 30px; padding-top: 60px; width: 300px; }
+@media screen and (max-width: 1024px) {
+  .typora-export-sidebar, .typora-export-sidebar .outline-content { width: 240px; }
+}
+@media screen and (max-width: 800px) {
+  .typora-export-sidebar { display: none; }
+}
+.outline-content li, .outline-content ul { margin-left: 0px; margin-right: 0px; padding-left: 0px; padding-right: 0px; list-style: none; }
+.outline-content ul { margin-top: 0px; margin-bottom: 0px; }
+.outline-content strong { font-weight: 400; }
+.outline-expander { width: 1rem; height: 1.42857rem; position: relative; display: table-cell; vertical-align: middle; cursor: pointer; padding-left: 4px; }
+.outline-expander::before { content: ""; position: relative; font-family: Ionicons; display: inline-block; font-size: 8px; vertical-align: middle; }
+.outline-item { padding-top: 3px; padding-bottom: 3px; cursor: pointer; }
+.outline-expander:hover::before { content: ""; }
+.outline-h1 > .outline-item { padding-left: 0px; }
+.outline-h2 > .outline-item { padding-left: 1em; }
+.outline-h3 > .outline-item { padding-left: 2em; }
+.outline-h4 > .outline-item { padding-left: 3em; }
+.outline-h5 > .outline-item { padding-left: 4em; }
+.outline-h6 > .outline-item { padding-left: 5em; }
+.outline-label { cursor: pointer; display: table-cell; vertical-align: middle; text-decoration: none; color: inherit; }
+.outline-label:hover { text-decoration: underline; }
+.outline-item:hover { border-color: rgb(245, 245, 245); background-color: var(--item-hover-bg-color); }
+.outline-item:hover { margin-left: -28px; margin-right: -28px; border-left: 28px solid transparent; border-right: 28px solid transparent; }
+.outline-item-single .outline-expander::before, .outline-item-single .outline-expander:hover::before { display: none; }
+.outline-item-open > .outline-item > .outline-expander::before { content: ""; }
+.outline-children { display: none; }
+.info-panel-tab-wrapper { display: none; }
+.outline-item-open > .outline-children { display: block; }
+.typora-export .outline-item { padding-top: 1px; padding-bottom: 1px; }
+.typora-export .outline-item:hover { margin-right: -8px; border-right: 8px solid transparent; }
+.typora-export .outline-expander::before { content: "+"; font-family: inherit; top: -1px; }
+.typora-export .outline-expander:hover::before, .typora-export .outline-item-open > .outline-item > .outline-expander::before { content: "−"; }
+.typora-export-collapse-outline .outline-children { display: none; }
+.typora-export-collapse-outline .outline-item-open > .outline-children, .typora-export-no-collapse-outline .outline-children { display: block; }
+.typora-export-no-collapse-outline .outline-expander::before { content: "" !important; }
+.typora-export-show-outline .outline-item-active > .outline-item .outline-label { font-weight: 700; }
+.md-inline-math-container mjx-container { zoom: 0.95; }
+
+
+@font-face {
+    font-family: "CamingoCodeRegular";
+    src: url('file:///C://Users//Administrator//AppData//Roaming//Typora/themes/academic-zh/CamingoCode-Regular-1.woff') format('woff');
+}@import '';
+
+:root {
+    --side-bar-bg-color: white;
+    --window-border: none;
+    --search-select-bg-color: #575c61;
+    --active-file-bg-color: #f1f4f5;
+    --item-hover-bg-color: #f1f4f5;
+    --item-hover-text-color: black;
+    --control-text-color: #555;
+}
+
+html {
+    font-size: 12pt;
+}
+
+/* Frame */
+body {
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.8rem;
+    letter-spacing: 0;
+    margin: 0;
+    overflow-x: hidden;
+}
+
+#write {
+    font-family: "STIX2Text", "Times New Roman", "华文中宋", "serif";
+    line-height: 1.5em;
+    padding: 10%;
+    padding-top: 5%;
+}
+
+.file-list-item-summary {
+    height: 36px;
+}
+
+.file-list-item {
+    padding-top: 18px !important;
+    padding-bottom: 18px;
+}
+
+#sidebar-loading-template.file-list-item {
+    padding-top: 0 !important;
+}
+
+a, a:visited {
+    color: #a00;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: inherit;
+    line-height: 1.5em;
+    margin-bottom: 1em;
+    margin-top: 1em;
+}
+
+h1  {
+    font-size: 2.4em;
+}
+
+#write h1  {
+    text-align: center;
+}
+
+h2 {
+    font-size: 1.8em;
+}
+
+h3 {
+    font-size: 1.4em;
+}
+
+h4 {
+    font-size: 1.2em;
+}
+
+h5  {
+    font-size: 1em;
+}
+
+h6 {
+    font-size: 1em;
+	color: #777;
+}
+
+p {
+    margin-top: 1em;
+    margin-bottom: 1em;
+    text-align: justify;
+}
+
+pre, code {
+    font-family: "CamingoCodeRegular", "Times New Roman", "华文中宋", "serif", monospace !important;
+}
+
+.cm-s-inner .CodeMirror-cursor {
+    border-left: solid rgba(128, 128, 255, 0.8) !important;
+}
+
+/* 代码框 */
+
+#write .md-fences {
+    border: 1px solid #7a7a7a;
+    -webkit-font-smoothing: initial;
+    margin: 1rem 0 !important;
+    padding: 3px 3px;
+    line-height: 1.55rem;
+    border-radius: 2px;
+    font-size: 0.9rem;
+    word-wrap: normal;
+}
+
+#write [mdtype="math_block"] {
+    font-size: 1.2rem;
+}
+
+#write .CodeMirror-wrap .CodeMirror-code pre {
+    padding-left: 12px;
+    line-height: 1.55rem;
+}
+
+.cm-s-inner .CodeMirror-linenumber {
+    width: 2ch !important;
+    color: rgba(128, 128, 255, 0.8);
+}
+
+#write .CodeMirror-cursors .CodeMirror-cursor {
+    border-left: 2px solid var(--main-4);
+}
+
+#write code,
+tt {
+    padding: 2px 4px;
+    border-radius: 2px;
+    font-size: 0.92rem;
+    color: #6b6b6b;
+    /* color: #c7254e;
+    background-color: #f9f2f4;  */
+}
+
+tt {
+    margin: 0 2px;
+}
+
+#write .md-footnote {
+    background-color: #ffffff;
+    color: #a00 !important;
+}
+
+
+.footnotes {
+    display: list-item;
+    margin-left: 1em;
+}
+
+.md-fences {
+    border: 1px solid;
+}
+
+.md-fences.md-fences-with-lineno {
+    border: none;
+}
+
+.CodeMirror-linenumber {
+    color: #333;
+}
+
+*.in-text-selection,
+::selection,
+.CodeMirror-selected {
+    background: var(--search-select-bg-color);
+    color: var(--search-select-text-color) !important;
+    text-shadow: none;
+}
+
+a.md-toc-inner {
+    color: var(--text-color);
+}
+
+.cm-s-typora-default .cm-link {
+    color: #a00;
+    text-decoration: underline;
+}
+
+.cm-s-typora-default .cm-header, .cm-s-typora-default .cm-property {
+    color: black;
+}
+
+#typora-source .CodeMirror-lines {
+    -webkit-font-smoothing: auto;
+    max-width: 1000px;
+}
+
+.md-def-name:before,
+.md-def-name:after {
+    color: #2d2d2d;
+}
+
+sup.md-footnote {
+    background-color: initial;
+    color: inherit;
+}
+
+mark {
+    background: #fff387;
+}
+
+td, th {
+    border: 1px solid;
+    padding-left: 1ch;
+    padding-right: 1ch;
+}
+
+/*table tr[cid]:first-child > td {
+    border-top: 3px double;
+}*/
+
+th {
+    border-bottom: 0;
+    padding-top: 2px;
+    background: #575c61;
+    border-color: #333;
+    color: #f3f3f3;
+}
+
+pre.md-meta-block {
+    border: 1px solid #a2a9b1;
+    background-color: #f8f9fa;
+    padding: 5px;
+    margin-bottom: 1em;
+}
+
+.task-list-item input:before {
+    content: '\221A';
+    display: inline-block;
+    width: 1.25rem;
+    height: 1.6rem;
+    vertical-align: middle;
+    text-align: center;
+    color: #bbb;
+    background-color: inherit;
+}
+
+.task-list-item input:checked:before,
+.task-list-item input[checked]:before{
+    color: inherit;
+}
+
+.md-task-list-item > input {
+    top: auto;
+    margin-left: -1.1em;
+    font-size: 1.3em;
+    margin-top: 0px;
+    -webkit-appearance: none;
+}
+
+.md-task-list-item input:before {
+    content: '\2610';
+    display: inline-block;
+    width: 1.25rem;
+    height: 1.6rem;
+    vertical-align: middle;
+    text-align: center;
+    color: #bbb;
+    background-color: inherit;
+}
+
+.md-task-list-item input:checked:before,
+.md-task-list-item input[checked]:before{
+    color: inherit;
+    content: '\2611';
+}
+
+.task-list-item {
+    padding-left: 1.5em;
+}
+
+blockquote {
+    font-style: italic;
+    padding: 0.25em 24px;
+    position: relative;
+    color: #383838;
+    border-left: 2px solid;
+    
+}
+
+
+#write > blockquote {
+    padding: 0.25em 30px;
+    margin-left: -32px;
+    width: calc(100% + 32px);
+}
+
+#write >  .md-fences-with-lineno {
+    margin-left: -33px;
+    color: black;
+}
+/*
+img {
+	max-height: 20em;
+}*/
+
+.CodeMirror-linenumber {
+    min-width: 25px;
+}
+
+.md-header {
+    font-size: inherit !important;
+}
+
+@media print {
+    @page{ 
+        size: auto;
+        margin: 20mm 10mm 20mm 10mm; /* 页边距 */
+    }
+}
+
+
+
+</style><title>分析题冲刺背诵</title>
+</head>
+<body class='typora-export os-windows'><div class='typora-export-content'>
+<div id='write'  class=''><p>&nbsp;</p><h3 id='一结合人与自然的辩证关系分析人不负青山青山定不负人'><span>一、结合人与自然的辩证关系，分析“人不负青山，青山定不负人”</span></h3><p><span>“人不负青山，青山定不负人”这句话深刻反映了人与自然和谐发展的重要性。从辩证唯物主义的角度看，人与自然是辩证统一的关系。</span></p><p><span>第一，自然界是人类社会形成的前提，是人类社会客观现实性的自然基础。</span></p><p><span>第二，实践是使物质世界划分为自然界和人类社会的历史前提，也是使自然界和人类社会相统一的现实基础。</span></p><p><span>第三，自然界及其规律制约着人类的社会活动和人类社会的发展，人类可以在认识自然规律、尊重自然规律的基础上，改造世界，同时改造自己。</span></p><p><span>当今世界生态、环境、人口、资源等全球危机问题，不单纯是自然系统内平衡关系的严重破坏，实际上也是人与自然和谐发展的严重失衡。马克思认为，应当合理的调节人与自然的物质交换，在最无愧和最合适人的本性的条件下进行这种物质交换。随着人类改造自然的拓展和深化，越来越认识到正确处理人与自然的关系，实现人与自然的和谐统一的重要性。</span></p><h3 id='二准确把握新发展阶段需要怎样的辩证思维'><span>二、准确把握“新发展阶段”需要怎样的辩证思维</span></h3><p><span>准确把握“新发展阶段”需要具有辨证发展的眼光、过程的观点、矛盾特殊性的角度和量变质变的思维方式。</span></p><p><span>第一，辩证法认为，事物是永恒发展的，中国特色社会主义也在不断的发展。改革开放以来，特别是党的十八大以来，中国特色社会主义的建设取得了历史性的成就，为我国进入新发展阶段，朝第二个百年奋斗目标进军奠定了坚实基础。</span></p><p><span>第二，事物发展是量的积累，最终达到质变的过程。我国的长期目标是建成社会主义现代化强国，实现中华民族伟大复兴，而要实现这一宏伟目标，就必须经过不断的量的积累，跨过多个阶段，才能最终完成。因此，新发展阶段是一个不断发展，不断积累量变的过程。</span></p><p><span>第三，量变和质变是相互渗透的。在量变的过程中有阶段性的质变，新发展阶段是社会主义初级阶段的一个阶段，我国的基本国情没有改变，只是在社会初级阶段的建设过程中，站在了新的起点上，取得了一些阶段性的成就。</span></p><p><span>第四，事物的发展是普遍性和特殊性的统一。与以往的阶段相比，新发展阶段具有许多的新情况，具有历史特殊性，需要我们具备新理念、开创新格局，在共性中把握事物的个性，做到具体问题具体分析。</span></p><h3 id='三结合实践对认识的决定作用分析材料'><span>三、结合“实践对认识的决定作用”分析材料</span></h3><p><span>我们的认识从根本上来说来源于实践，是由实践决定的。</span></p><p><span>实践是认识的来源，离开实践的认识是不可能存在的，一切真知都是实践发源的。一个人的知识不外乎是直接经验和间接经验两个部分，就知识的总体而言，任何知识都离不开直接经验。从根本上来说，实践是认识的源头活水。</span></p><p><span>实践是认识发展的动力。实践的需要推动了认识的产生和发展，推动了人类的科学发现和技术发明，推动了人类的思想进步和理论创新。</span></p><p><span>实践是认识的目的。我们通过实践来获得认识，不是为了认识而认识，其最终的目的是服务实践、指导实践，以满足人们对生产和生活的需要。</span></p><p><span>实践是检验认识真理性的唯一标准。判断认识或理论的真理性，不依主观上如何而定，而是依客观上社会实践的结果如何而定。检验真理行的标准只有社会实践。</span></p><p><span>对于认识来源于实践，不做狭隘的、简单化的理解。第一，认识来源于实践并不否定人的大脑和感官生理上的差异对认识的影响，第二，认识来源于实践并不否定学习间接经验的重要性。</span></p><h3 id='四结合人民群众在历史发展中的地位和作用说明为什么江山是人民人民是江山打江山守江山守的就是人民的心'><span>四、结合人民群众在历史发展中的地位和作用，说明为什么“江山是人民，人民是江山，打江山、守江山，守的就是人民的心”</span></h3><p><span>在社会历史发展过程中，人民群众起着决定性的作用，人民群众是社会实践的主体，在创造社会历史的过程中，人民群众起着决定性的作用。人民群众是顺应生产力发展的社会力量，人民群众是变革旧的生产关系愿望的社会力量，人民群众是变革旧的社会制度和思想观念的社会力量。</span></p><p><span>唯物史观要求我们坚持全心全意为人民服务的马克思主义群众观点，贯彻党的群众路线，一切为了群众，一切依靠群众，从群众中来到群众中去。</span></p><h3 id='五现阶段为什么把实现共同富裕摆在更加重要的位置'><span>五、现阶段，为什么把“实现共同富裕摆在更加重要的位置”</span></h3><p><span>党的十八大以来，党中央把握新发展阶段的变化，把逐步实现全体人民共同富裕摆在更加重要的位置上，推动区域协调发展，采取有力措施保障和改善民生，打赢脱贫攻坚战，全面建成小康社会，为促进共同富裕创造了良好的条件。现再，已经到了扎实推进共同富裕的历史阶段。</span></p><p><span>第一，我们正在向第二个百变奋斗目标迈进。适应我国社会主要矛盾的变化，更好满足人民日益增长美好生活需要，必须把促进全体人民共同富裕作为人民谋幸福的着力点，不断夯实党的长期执政基础。</span></p><p><span>第二，高质量发展需要高素质人才，只有促进共同富裕，提高城乡居民收入，提升人力成本，才能提高全要素生产率，夯实高质量发展的动力基础。</span></p><p><span>第三，当前，全球收入不平衡问题突出，一些国家贫富分化，中产阶级塌陷，导致社会撕裂，政治极化，民粹主义泛滥，教训十分深刻。我国必须坚决防止两极分化，促进共同富裕，实现社会和谐安定。</span></p><p><span>共同富裕是社会主义的本质要求，是中国式现代化的重要特征。</span></p><h3 id='六如何在高质量发展中实现共同富裕'><span>六、如何在高质量发展中实现共同富裕</span></h3><p><span>总的思路：坚持以人民为中心的发展思想，在高质量发展中促进共同富裕，正确处理公平与效率的关系，构建初次分配、再次配分和三次分配协调配套的基础性制度安排，扩大中等收入群体规模，增加低收入群体的收入，合理调节高收入，取缔非法收入，形成中间大两头小的橄榄形分配结构，促进社会公平正义，促进人的全面发展，使全体人民朝着共同富裕目标扎实推进。</span></p><p><span>第一，提高发展的平衡性、协调性、包容性。要加快完善社会主义市场经济体制，推动发展更平衡、更协调、更包容。</span></p><p><span>第二，着力扩大中等收入群规模，抓住重点，精准施策，推动一部分低收入群体迈入中等收入行列。</span></p><p><span>第三，促进公共基础服务均等化。</span></p><p><span>第四，加强高收入的规范和调节。依法保护合法收入的同时，防止两极分化，消除分配不公。要合理调节过高收入，完善个人所得税制度，完善资本性所得管理。</span></p><p><span>第五，促进人民精神共同富裕。</span></p><p><span>第六，促进农村农民共同富裕。促进共同富裕，最艰巨最繁重的任务任然在农村。</span></p><p><span>要实现14亿人的共同富裕，必须脚踏实地、久久为功，不是所有人同时富裕，也不是所有地区同时达到一个富裕水准，不同人群不仅实现富裕的程度有高有低，时间上也会有先有后，不同地区富裕程度有一定的差异，不可能齐头并进。这是一个在动态中向前发展的过程，要持续推进，不断取得成效。</span></p><h3 id='第七系统思维能力'><span>第七、系统思维能力</span></h3><p><span>系统思维能力就是从</span><strong><span>事物相互联系</span></strong><span>的各个方面及其</span><strong><span>结构</span></strong><span>和</span><strong><span>功能</span></strong><span>进行</span><strong><span>系统思考的能力</span></strong><span>，就是全面系统的分析和处理问题的能力。</span></p><p><span>坚持系统观念，就是把事物放在普遍联系的系统中来把握，在</span><strong><span>在系统与要素</span></strong><span>、</span><strong><span>要素与要素</span></strong><span>、</span><strong><span>结构与层次</span></strong><span>、</span><strong><span>系统与环境之间</span></strong><span>的相互联系和作用的动态过程中把握事物，力求获得问题的最优解。</span></p><h3 id='第八全面建成社会主义现代化国家面临怎样的机遇和挑战'><span>第八、全面建成社会主义现代化国家面临怎样的机遇和挑战？</span></h3><p><span>从国际上看，当今世界正经历百年未有之大变局，新一轮技术革命和产业革命深入发展，人类命运共同体深入人心。同时国际环境日趋复杂，不稳定性和不确定性显著增加，新冠肺炎影响深远，经济全球化遭遇逆流，国际政治经济格局复杂多变，世界进入动荡变革期，单边主义，保护主义、霸权主义对世界和平与发展构成威胁。</span></p><p><span>从国内看，我国已转入高质量发展阶段，制度优势明显，治理效能提升，经济长期向好，物质基础雄厚，人力资源丰厚，市场空间广阔，发展韧性强劲，社会大局稳定，继续发展具有多方面优势和条件。同时我国发展不平衡不充分问题任然突出，重点领域关键环节改革任务任然艰巨，特别是创新能力不适应高质量发展要求，关键核心技术受限于人的局面没有得到根本性改变，多个领域如高端芯片，基础原件等存在“卡脖子”问题，在科技发展面临外部打压和遏制加剧的形势下，亟待加快自主创新步伐。</span></p><p><span>总的来说，当前和今后一个时期，我国仍然处于战略机遇期。</span></p><h3 id='第九简述进入新发展阶段贯彻新发展理念构建新发展格局之间的关系'><span>第九、简述进入新发展阶段、贯彻新发展理念、构建新发展格局之间的关系</span></h3><p><span>进入新发展阶段、贯彻新发展理念、构建新发展格局，是由我国的经济社会发展的理论逻辑、历史逻辑和显示逻辑决定的，三者紧密关联。</span></p><p><span>进入新发展阶段明确了我国发展的历史方位，贯彻新发展理念明确了我国现代化建设的指导原则，构建新发展格局明确了我国经济现代化的路径选择。</span></p><p><span>把握新发展阶段是贯彻新发展理念、构建新发展格局的现实依据，贯彻新发展理念为把我新发展阶段、构建新发展格局提供了行动指南，构建新发展格局是应对新发展阶段机遇和挑战、贯彻新发展理念的战略选择。</span></p><h3 id='第十为什么说中国共产党的成立深刻改变了近代以后中华民族发展的方向和进程深刻改变了中国人民和中华民族的前途和命运'><span>第十、为什么说中国共产党的成立“深刻改变了近代以后中华民族发展的方向和进程，深刻改变了中国人民和中华民族的前途和命运”？</span></h3><p><span>一百年以来，中国共产党团结带领中国人民进行的一切奋斗、一节牺牲、一切创造，归结起来只有一个主题：实现中华民族的伟大复兴。</span></p><p><span>第一，为实现中华民族伟大复兴，中国共产党团结带领中国人民，浴血奋战，百折不挠，创造了新民主主义革命的伟大成就，为实现中华民族伟大复兴，创造了根本社会条件。</span></p><p><span>第二，为实现中华民族伟大复兴，中国共产党团结带领中国人民，自力更生，发奋图强，创造了社会主义革命和建设的伟大成就，实现了一穷二白、人口众多的东方大国大踏步迈进社会主义社会的历史性跨越，为实现中华民族伟大复兴，创造了根本政治前提和制度基础。</span></p><p><span>第三，为实现中华民族伟大复兴，中国共产党团结带领中国人民，解放思想，锐意进取，创造了改革开放和社会主义现代化建设的伟大成就，实现了中国人民从温饱不足到总体小康，迈向全面小康的历史性跨越，为实现中华民族伟大复兴，提供了充满新的活力的体制保证和物质基础。</span></p><p><span>第四，为实现中华民族伟大复兴，中国共产党团结带领中国人民，自信自强，守正创新，统揽伟大斗争，伟大工程，伟大事业，伟大梦想，创造了新时代中国特色社会主义的伟大成就，实现第一个百年奋斗目标，明确实现第二个百年奋斗目标的战略安排，党和国家事业取得历史性成就、发生历史性变革，为实现中华民族伟大复兴提供了更为完善的制度保证、更为坚实的物质基础、更为主动的精神力量。</span></p><h3 id='第十一为什么说人民代表大会制度是实现我国全过程人民民主的重要载体'><span>第十一、为什么说人民代表大会制度是实现我国全过程人民民主的重要载体</span></h3><p><span>一个国家民不民主，关键在于是不是真正做到人民当家作主，要看人民有没有投票权，更要看人民有没有广泛参与权；要看人民在选举过程中得到了什么口头承诺，更要看选举后这些承诺实现了多少；要看制度和法律规定了什么样的政治制度和政治规则，更要看到这些制度和法律是不是真正得到了执行；要看权力运行规则和程序是否民主，更要看到权力是否真正受到人民监督和制约。</span></p><p><span>我国全过程民主不仅有完整的制度程序，而且有完整的参与实践。我国全过程人民民主实现了过程民主和成果民主、程序民主和实质民主、直接民主和间接民主、人民民主和国家意志相统一，是全链条、全方位、全覆盖的民主，是最广泛、最真实、最管用的社会主义的民主。</span></p><p><span>人民代表大会制度是我国的根本制度安排，是符合中国国情、体现中国社会主义国家性质、能够保证人民当家作主的根本政治制度和最高实现形式，也是党在国家政权中充分发扬民主、贯彻群众路线的最好实现形式，是坚持党的领导、人民当家作主、依法治国有机统一的根本政治安排。人民代表大会制度是实现我国全过程人民民主的重要制度载体。</span></p><h3 id='第十二以中国共产党革命建设改革的奋斗历程为视角谈谈社会主义没有辜负中国和中国没有辜负社会主义'><span>第十二、以中国共产党革命、建设、改革的奋斗历程为视角谈谈“社会主义没有辜负中国”和“中国没有辜负社会主义”</span></h3><p><span>1917年，俄国十月革命一声炮响，开辟了无产阶级社会主义革命的新纪元。1921，以马克思主义为指导思想，共产主义为奋斗目标的政党--中国共产党诞生了。从此，社会主义的火种在东方点燃，指引中国新民主主义革命取得胜利。</span></p><p><span>新中国成立以后，中国共产党坚持科学社会主义的基本原则，完成了农业、手工业、资本主义工商业的社会主义改造，创造性地完成了由新民主主义到社会主义革命的转变，在探索社会主义建设道路过程中取得了一系列的重要成果。</span></p><p><span>改革开放以来，中国共产党不断丰富和发展中国化的马克思主义，团结带领中国人民取得了举世瞩目的伟大成就。中华大地汹涌澎拜的伟大实践表明，只有社会主义才能发展中国，只有改革开放才能让中国大踏步赶上时代，让人民过上幸福生活，中国特色社会主义越走越宽广。</span></p><p><span>此外，中国特色社会主义的伟大成就，意味着科学社会主义在中国焕发了强大生机活力，再次证明了科学社会主义的科学性。</span></p><p><span>由此可见，社会主义没有辜负中国，中国没有辜负社会主义。</span></p><p>&nbsp;</p><h3 id='第十三为什么说中国共产党能中国特色社会主义好是因为马克思主义行'><span>第十三、为什么说中国共产党“能”，中国特色社会主义“好”，是因为马克思主义“行”？</span></h3><p><span>马克思主义是“我们党的灵魂和旗帜”，是中国共产党“能”，中国特色社会主义“好”的理论根基。</span></p><p><span>首先，是因为马克思主义理论的科学性。马克思主义揭示了人类历史发展的一般规律。列宁领导的俄国十月革命给中国以启示：经济文化落后的国家也可以用社会主义思想指引自己走向解放之路。中国共产党人创造性地将马克思主义与中国实际相结合，探索出了一条符合中国革命、建设、改革实际情况的正确道路。</span></p><p><span>其次，是因为马克思主义立场的人民性。马克思主义第一次站在人民的立场上探索人类自由解放的道路，以科学的理论为最终建立了一个没有压迫，没有剥削，人人平等，人人自由的理想社会指明了方向。</span></p><p><span>再其次，是因为马克思主义体系的开放性。在马克思主义深刻改变中国的同时，中国也在极大的丰富马克思主义。中国共产党的百年历程，就是一部不断推进马克思中国化的历史，就是一部不断推进理论创新、进行理论创造的历史。</span></p><p><span>最后，是因为马克思主义品格的实践性。马克思主义是为改变人民历史命运而建立的，是在人民求解放的实践中形成的，是在人民求解放的实践中丰富和发展的，它为人民认识世界、改造世界提供了强大的精神力量。</span></p><h3 id='第十四结合袁隆平的理想谈一谈为什么要将个人的小我融入祖国的大我'><span>第十四、结合袁隆平的理想，谈一谈为什么要“将个人的‘小我’，融入祖国的‘大我’”？</span></h3><p><span>个人理想和社会理想的关系是个人与社会的关系在理想层面的反映，它们相互联系，相互影响，相互制约。</span></p><p><span>一方面，个人理想以社会理想为指引。个人理想的实现以社会理想的实现为前提和基础。因此，社会理想是理想体系中最根本的，重要的，个人理想从属于社会理想，个人理想的实现依赖于社会理想的实现，社会理想规定、指引着个人理想。</span></p><p><span>另一方面，社会理想是个人理想的凝练和升华。社会理想建立在众多个人理想的基础上，其实现归根到底要靠社会成员的共同努力。因此，我们要将个人理想融入到社会理想中，在为社会理想奋斗的过程中实现个人理想。</span></p><p>&nbsp;</p><h3 id='第十五结合黄秀文的故事谈一谈如何理解一个人要活得有意义生存的有价值就不能光为自己而活要用自己得力量为他人为祖国为民族为社会做贡献'><span>第十五、结合黄秀文的故事，谈一谈如何理解“一个人要活得有意义，生存的有价值，就不能光为自己而活，要用自己得力量为他人、为祖国、为民族、为社会做贡献。”</span></h3><p><span>人生的自我价值和社会价值，既相互区别，又紧密联系，相互依存，共同构成人生价值的矛盾统一体。</span></p><p><span>一方面，人生的自我价值是人生存和发展的必要条件，人生的自我价值的实现是个体为社会创造更大价值的前提。个体的人生活动不仅具有满足自我需要的价值属性，还必然地包含着满足社会需要的价值属性。个体努力提高自我价值的过程，也是其创造社会价值的过程。</span></p><p><span>另一方面，人生的社会价值是社会存在和发展的重要条件，人生的社会价值的实现是个体自我完善、全面发展的保障。没有社会价值，人生的自我价值就不可能存在。人是社会的人，这不仅意味着个体物质和精神的需要必须在社会中才能够得到满足，好意味着以怎样的方式和在多大程度上得到满足也是由社会决定的。</span></p><h3 id='第十六红色基因红色血脉的内涵实质是什么'><span>第十六、“红色基因/红色血脉”的内涵/实质是什么？</span></h3><p><span>红色基因/红色血脉是马克思主义与中国革命、建设和改革的伟大实践相结合的产物，是中国优良道德传统的继承和发展，是中华优秀传统美德新的升华和质的飞跃，是中华民族极其宝贵的道德财富。</span></p><p><span>红色基因/红色血脉是无数中国人为实现社会主义和共产主义理想而奋斗的产物，从一开始就特别强调，为群众服务，为大众谋幸福，为人民利益献身，始终把革命利益摆在首位，极大的激励了革命者为集体献身的斗志。</span></p><p><span>此外，红色基因/红色血脉也展现了中国共产党人严于律己、谦虚谨慎、淡泊名利、廉政清洁、襟怀坦白、光明磊落的人格力量。</span></p><h3 id='第十七为什么说新中国恢复联合国合法席位对中国对世界都具有重大而深远的意义'><span>第十七、为什么说新中国恢复联合国合法席位“对中国、对世界都具有重大而深远的意义”？</span></h3><p><span>新中国恢复联合国合法席位对中国来说，至少有以下三个方面的意义。</span></p><p><span>第一，为中国逐步融入以《联合国宪章》为基础的战后国际体系打开大门，从此中国积极参与联合国各项任务，在保护生物多样性、维和等方面发挥着重要作用。</span></p><p><span>第二，为中国和平发展提供了良好的外部环境。我国国土面积广阔，边界线长，在很长一段时间内，我国与周边国家存在领土争端，随着中国恢复联合国合法席位，更好利用联合国的职能调和冲突，营造良好的发展环境。</span></p><p><span>第三，为中国融入全球市场提供给了广阔的平台。新中国回复联合国合法席位时，正值第三次产业革命浪潮，电子技术飞速发展，这成为中国改革开放的前奏，也为此后中国40多年的经济建设取得的伟大历史性成就创造了前提。</span></p><p><span>新中国恢复联合国合法席位对世界来说也具有重要意义，主要包括以下三个方面。</span></p><p><span>第一，使联合国更完整，有利于国际体系的构成。中国忠实履行联合国安理会常任理事国的职责和使命，维护联合国宪章宗旨和原则，维护联合国在国际事务中的核心地位和作用，使国际体系更合理、更完善、更具代表性。</span></p><p><span>第二，实现大国关系的基本平衡，有利于联合国更好发挥作用。中国人命热爱和平，深知和平安宁的珍贵，中国始终奉行独立自主的和平外交政策，坚决反对霸权主义和强权政治，坚定支持广大发展中国家维护自身主权、安全、发展利益的正义战争。</span></p><p><span>第三，避免了世界市场的分裂，有利于促进经济全球化。中国人命致力于推动共同发展，从“坦赞铁路”到“一带一路”，中国向发展中国家提供力所能及的帮助，不断以中国发展为世界提供新机遇，实现互利共赢。</span></p><h3 id='第十八如何理解维护和践行真正的多边主义是国际社会的共同选择'><span>第十八、如何理解“维护和践行真正的多边主义是国际社会的共同选择”？</span></h3><p><span>当前，新冠疫情仍在全球蔓延，世界经济复苏面临不确定性，国际热点问题延宕难解，气候变化等非传统安全挑战层出不穷。要解决人类面临的全球性问题，必须让多边主义的火炬照亮人类前行之路，团结起来开展全球行动，全球应对，全球合作。</span></p><p><span>维护和践行真正的多边主义，必须准确把握多边主义的要义，筑牢国际合作的基础。真正的多边主义，离不开联合国，要坚定维护以联合国为核心的国际体系，离不开国际法，要坚定维护以国际法为基础的国际秩序，离不开各国合作，大国必须带头主持公道，厉行法治，承担责任，聚焦行动。</span></p><p><span>维护和践行真正的多边主义，必须秉持包容开放、厉行法治、协商合作、与时俱进的精神，坚持共商共建共享原则。中方明确指出，任何损害多边主义机构权威性和有效性的集团政治，任何削弱多边主义公平性和平等性的意识形态对抗，都是与人类共同利益背道而驰。正确的选择应当是：要合作共赢，不要零和博弈，要公平正义，不要霸凌霸道，要聚焦行动，不要坐而论道，要尊重多样性，不要唯我独尊。</span></p><p><span>维护和践行真正的多边主义，必须起而行之，聚焦问题，决解问题，以共计天下之利，长远之利，促进世界持续和平和全球可持续发展。中国推动高质量共建“一带一路”，尽己所能展开南南合作，向发展中国家提供帮助。中国以行动表明，中国始终是多边主义的倡导者、维护者、践行者和开拓者。</span></p><p>&nbsp;</p><h3 id='第十九为什么说中国入世实现了与实践的共赢'><span>第十九、为什么说：“中国入世，实现了与实践的共赢”</span></h3><p><span>世界贸易组织是当今世界处理贸易问题的重要国际组织，对世界经济贸易发展发挥着不可替代的作用。中国加入世贸组织，进一步加强了中国与世界各国各地区的经贸联系，有利于改善中国的国际贸易环境，实现出口市场多元化，促进我国国际贸易事业的发展，给中国对外经济贸易的发展提供了良好的机遇，有利于吸收更多的外国投资，促进中国经济快速健康发展，扩大了改革开放的成果，推动了中国特色社会主义市场体制的完善，为国民经济持续健康快速发展注入了新的活力。</span></p><p><span>中国是世界上最大的发展中国家，没有中国的参加，世界贸易组织是不完整的，不能体现多边贸易体制的普遍性和公正性。对于世界贸易组织来说，有了中国的加入，才能使其真正的成为一个完整的、全球性的国际组织，可以更好的发挥重要作用。经济全球化是世界经济发展的客观趋势和必然规律，中国入世以来，为世界经济作出了突出贡献，实现了与世界的共赢。</span></p><h3 id='第二十共同开放与建设开放型世界经济'><span>第二十、共同开放与建设开放型世界经济</span></h3><p><span>在全球化时代，世界正在发生深刻变化，现代科技加速发展，国际分工和社会分工不断深化，人类的各项活动紧密联系在一起，各国各地区之间相互依存、相互开放。人们的生存方式发生重大改变，既相互竞争又紧密联系在一起。</span></p><p><span>第一， 我们要平等协商，开创共赢共享的未来。我们应该秉持共商共建共享原则，坚持真正的多边主义，推动全球治理体系朝着更加公平合理的方向发展。要维护以联合国为核心的国际体系，维护以国际法为基础的国际秩序，维护以世界贸易组织为核心的多边贸易体制。</span></p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p></div></div>
+</body>
+</html>
