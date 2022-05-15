@@ -379,7 +379,7 @@ Unified Modeling Language(统一建模语言)是对象管理组织(OMG)制定的
 
 ☑核心概念
 
-​	◆用例：，系统中的一个功能单元，可以被描述为参与者与系统之间的一次交互作用
+​	◆用例：系统中的一个功能单元，可以被描述为参与者与系统之间的一次交互作用
 
 ​	◆参与者、参与者泛化
 
@@ -577,13 +577,7 @@ UC01:“借书”用例文档
 ### 时间图
 
 ☑时间图(Timing Diagram)
-◆一种交互图，展现消息跨越不同对象或角色
-的实际时间信息
-,具体描述单个或多个对象状态变化的时间点以及
-维持特定状态的时间段
-,顺序图是表示交互的主要手段，可以在顺序图中
-增加时间约束来表明对象状态变化的时间点以及
-维持特定状态的时间段
+◆一种交互图，展现消息跨越不同对象或角色的实际时间信息,具体描述单个或多个对象状态变化的时间点以及维持特定状态的时间段,顺序图是表示交互的主要手段，可以在顺序图中增加时间约束来表明对象状态变化的时间点以及维持特定状态的时间段
 ☑核心概念
 ◆时间约束、持续时间约束、生命线
 ◆状态、条件、事件
@@ -674,7 +668,7 @@ UC01:“借书”用例文档
 
 ### UML是标准的符号
 
-1.用UML画图很容易                摆脱符号烦恼
+1.用UML画图很容易  摆脱符号烦恼
    但知道要画什么是困难的！全心面对问题
 
 2.UML仅仅是一种表达形式
@@ -821,8 +815,6 @@ UC01:“借书”用例文档
 ☑识别业务用例
 	◆业务为业务参与者提供的**价值**
 	◆体现企业业务本质，是**有意义**的目标
-
-![image-20220422151316006](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20220422151316006.png)*业务用例*
 
 #### 识别业务用例的方法
 
@@ -1014,7 +1006,7 @@ UC01:“借书”用例文档
 
 ​	◆设计模型中，可以按照不同的类进行分区，一个类负责执行该区中的节点的行为
 
-![image-20220422155220030](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20220422155220030.png)
+
 
 ## 业务对象模型
 
@@ -1031,9 +1023,6 @@ UC01:“借书”用例文档
 #### 区分业务参与者和业务工人
 
 ☑业务参与者在业务外面
-☑业务工人在业务里面
-
-![image-20220422155913332](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20220422155913332.png)业务工人![image-20220422155954006](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20220422155954006.png)业务实体
 
 ## 业务建模实现
 
@@ -1064,8 +1053,6 @@ UC01:“借书”用例文档
 
 #### 实例分析：业务用例模型
 
-![image-20220422170035226](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20220422170035226.png)
-
 #### 实例分析：旅客业务流程--活动图
 
 
@@ -1086,16 +1073,6 @@ UC01:“借书”用例文档
 #### 实例分析：完善业务用例模型和业务流程
 
 
-
-
-
-
-
-![image-20220422161243221](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20220422161243221.png)
-
-![image-20220422161611672](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20220422161611672.png)
-
-![image-20220422161733508](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20220422161733508.png)
 
 用类图替代业务对象模型
 
@@ -1140,8 +1117,6 @@ UC01:“借书”用例文档
 **需求难在：**难捕获，易改变
 
 **需求也需要开发**
-
-![image-20220423052700091](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20220423052700091.png)
 
 **需求问题：对策**
 
@@ -1245,7 +1220,7 @@ UC01:“借书”用例文档
 ### 用例建模流程
 
 ☑1.获取原始需求
-☑②.开发一个可以理解的需求
+☑2.开发一个可以理解的需求
 	◆2.1识别参与者
 	◆2.2识别用例
 	◆2.3绘制用例图
@@ -1290,7 +1265,6 @@ UC01:“借书”用例文档
 ◆...
 
 **需求获取技术对比**
-![image-20220423055657369](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20220423055657369.png)
 
 ### 开发一个可以理解的需求
 
@@ -1448,12 +1422,8 @@ UC01:“借书”用例文档
 ◆所申请旅游团的人数限额未满。
 ​		所参加的旅游团不同，其截止日期也会不同。在所申请旅游团能办理的情况下，员工将向系统录入申请责任人的姓名、电话号码、参加旅游团的大人和孩子的人数，从而算出订金。参加者每个人所对应的订金是由到出发日期的天数所决定的，其关系如表4-2所示:
 
-![image-20220423112559109](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20220423112559109.png)
-
 ​		办理完这些手线后，旅行社员工需要向项客收取相应的订金，并在本系统中记录订金支付情况之后，旅行社的员工还向顾客提供订金的收据和一份申请责任人用的旅游申请书，并委托顾客将所申请的其他参加者用的旅游申请书发给他们，所有的旅游申请书集中起来一周以内邮寄到旅行社，有其他问2的话可以再次向旅行社提出。旅游申请书的各项内容对干申请责任人和参加者来说都是一样的。
 ​		接到顾客邮寄回来的旅游申请书后，员工通过旅游团代码、出发日期和申请负责人等信息查询出该顾客所申请的信息，将相关的参加者信息录入到系统中，录入工作也由这些按待顾客的员工在空闲时间完成，所有的参加者信息录入系统后，一次申请即完成。旅游申请书的格式如表4-3所示:
-
-![image-20220423112822678](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20220423112822678.png)
 
 ​		申请手续办理完成后，旅行社需要把旅游确认书、余额交款单部寄给申请责任人·每天负责催款的员工要通过系统打印前一天己完成申请的旅游确认书、余额交款单。申请时旅费已全款支付的
 
@@ -1494,10 +1464,6 @@ UC01:“借书”用例文档
 	◆非功能需求、设计约束
 ☑待解决问题
 ☑相关图（用例图、活动图、类图）
-
-![image-20220423113828671](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20220423113828671.png)
-
-![image-20220423114142833](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20220423114142833.png)
 
 **从涉众角度定义用例**
 
@@ -1550,8 +1516,6 @@ UC01:“借书”用例文档
 	◆例如：“管理订单”却没有“登录”用例
 
 **事件流--用例交互四部曲**
-
-![image-20220423115407181](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20220423115407181.png)
 
 **事件流描述要点**
 
@@ -1681,8 +1645,6 @@ UC01:“借书”用例文档
 	◆用例分包
 		将相关的用例打包，通过分包的方式可以将用例图分层表示，以用于大规模系统的用例建模
 
-![image-20220423122138809](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20220423122138809.png)
-
 **通过关系整理文档**
 ☑Include(包含)
 ◆基用例中复用被包含用例的行为
@@ -1714,7 +1676,7 @@ UC01:“借书”用例文档
 
 包含是一个用例包含在另一个用例中，是另一个用例的一部分
 
-![image-20220423123001500](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20220423123001500.png)
+
 
 **用例关系：泛化**
 ☑泛化：表示子用例继承了父用例
@@ -1739,10 +1701,6 @@ UC01:“借书”用例文档
 
 利用分包机制组织用例模型
 
-![image-20220423133607482](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20220423133607482.png)
-
-![image-20220423133657705](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20220423133657705.png)
-
 **为什么要对用例进行分级**
 ☑用例和迭代开发
 ◆迭代开发中开发周期的定义是围绕用例来组织的
@@ -1764,8 +1722,6 @@ UC01:“借书”用例文档
 **用例分级实施策略-2**
 ☑依照上述的影响用例级别的特性给用例打分（特性也可能
 带有权值)
-
-![image-20220423134117000](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20220423134117000.png)
 
 **用例建模中的常见问题**
 ☑用例不是功能分解
@@ -1826,8 +1782,6 @@ UC01:“借书”用例文档
 ◆包括两类模型：静态结构（包图、**类图**）和动态交互（**顺序图**、通信图)
 ◆模型元素按照架构来组织，各类视图按照**用例实现**（协作）来组织
 
-![image-20220423135438867](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20220423135438867.png)
-
 ### 分析与需求的关系
 
 ☑分析是建立在需求收集的基础上
@@ -1858,7 +1812,7 @@ UC01:“借书”用例文档
 ◆分析是对需求模型的重新表述，是以理想化的方式来实现用例行为，不考虑技术实现
 ◆分析侧重于系统主要部公，关注核心的业务场景；对支撑性行为、非功能需求等不做深入的分析
 
-![image-20220423135952871](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20220423135952871.png)
+
 
 ### 从用例开始分析迭代
 
@@ -1871,12 +1825,6 @@ UC01:“借书”用例文档
 ◆影响系统性能等其他关键非功能需求的部分
 ◆存在高风险的部分，如新技术、新产品
 
-![image-20220423140127634](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20220423140127634.png)
-
-
-
-![image-20220423140158982](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20220423140158982.png)
-
 ### 分析阶段的用例一用例实现
 
 ☑用例实现(UML2协作，Collaboration)是设计（分析）模型中系统用例的表达式
@@ -1885,8 +1833,6 @@ UC01:“借书”用例文档
 	◆将用例模型中的用例和设计（分析）模型中的类和关系连接在一起
 	◆说明了每个用例必须用那些类来实现
 ☑用例实现提供了从分析和设计到需求的可跟踪性
-
-![image-20220423140514856](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20220423140514856.png)
 
 ## 架构分析
 
@@ -1920,8 +1866,6 @@ UC01:“借书”用例文档
 ☑将应用逻辑作为单独的构件从系统中分离出来，以便这些构件在其他系统中能得到重用
 ☑将各个层次分配到各个不同的物理计算节点，或者分配给不同的进程。这样可以改善系统性能、更好地支持客户和服务器系统中的信息共享和协调
 ☑将不同层的开发任务在开发者之间适当地分配，这可以有效地利用开发人员的专长和开发技巧，并且能够提高兼行涯发熊丸
-
-![image-20220423145658105](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20220423145658105.png)
 
 #### B-C-E三层架构解析
 
@@ -2086,7 +2030,7 @@ Synchronization)
 ◆对象(Object):对象、对象的生命线、对象的执行发生和对象的删除
 ◆消息(Message):简单消息、同步消息、异步消息、返回消息
 
-![image-20220423152838830](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20220423152838830.png)
+
 
 **利用顺序图进行职责分配**
 ☑以B-C-E的方式绘制顺序图，并以Control类将控制逻辑隐藏起来
@@ -2234,10 +2178,6 @@ Synchronization)
 ### 4.限定分析机制
 
 ☑建立分析类和分析机制的对应图
-
-![image-20220423161516458](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20220423161516458.png)
-
-![image-20220423161609948](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20220423161609948.png)
 
 ### 5.统一分析类
 

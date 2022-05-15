@@ -651,13 +651,531 @@ int main()
 
 
 
+## 智能指针
+
+### 什么是智能指针？
+
+智能指针是存储指向动态分配（位于堆）对象指针的类，用于生存期控制，能确保在离开指针所在作用域时，自动正确地销毁动态分配的对象，以防止内存泄漏。
+
+智能指针通常通过引用计数技术实现：每使用一次，内部引用计数+1；每析构一次，内部引用计数-1，当减为0时，删除所指堆内存。
+
+C++11提供3种智能指针：std::shared_ptr, std::unique_ptr, std::weak_ptr
+
+头文件：
+
+下面围绕这这种智能指针进行探讨。
+
+### shared_ptr
+
+shared_ptr是共享的智能指针，使用引用计数，允许多个shared_ptr指针指向同一个对象。只有在最后一个shared_ptr析构时，引用计数为0，内存才会被释放。
+
+#### shared_ptr基本用法
+
+**1. 初始化**
+可以通过 构造函数、make_shared辅助函数、reset方法 来初始化shared_ptr，如：
+
+```cpp
+// 智能指针的初始化方式
+shared_ptr<int> p(new int(1)); // 传参构造
+shared_ptr<int> p2 = p; // copy构造
+shared_ptr<int> p3; // 创建空的shared_ptr，不指向任何内存
+p3.reset(new int(2)); // reset方法 替换p3管理对象指针为传入指针参数
+auto p4 = make_shared<int>(3); // 利用make_shared辅助函数，创建shared_ptr
+
+if (p3) 
+	cout << "p3 is not null" << endl;
+
+else 
+	cout << "p3 is null" << endl;
+```
+
+应该优先使用make_shared创建智能指针，因为更高效。
+**TIPS：**
+1）如果智能指针中引用计数 > 0，reset将导致引用计数-1；
+2）除了通过引用计数，还可以通过智能指针的operator bool类型操作符，来判断指针所指内容是否为空（未初始化）；
+
+**错误做法：将一个原始指针直接赋值给一个智能指针。**
+
+```cpp
+// 错误的智能指针创建方法
+shared_ptr<int> p = new int(1); // 编译错误，不允许直将原始指针赋值给智能指针
+```
+
+**2. 获取原始指针**
+
+通过shared_ptr的get方法来获取原始指针。如：
+
+```cpp
+shared_ptr<int> p(new int(1));
+int* rawp = p.get();
+cout << *rawp << endl; // 打印1
+```
+
+注意：get获取原始指针并不会引起引用计数变化。
+
+**3. 指定删除器**
+
+智能指针的默认删除器是operator delete，初始化的时候可以指定自定义删除器。如：
+
+```cpp
+// 自定义删除器DeleteIntPtr
+void DeleteIntPtr(int* p) {
+	delete p;
+}
+shared_ptr<int> p(new int, DeleteIntPtr); // 为shared_ptr指定自定义删除器
+```
+
+删除器何时调用？
+
+当p的引用计数为0时，自动调用删除器DeleteIntPtr释放对象的内存。删除器可以是函数，也可以是lambda表达式，甚至任意可调用对象。
+
+如：
+
+```cpp
+// 为shared_ptr指定删除器示例
+shared_ptr<int> p(new int, DeleteIntPtr); // 为指向int的shared_ptr指定删除器，删除器是自定义函数
+shared_ptr<int> p1(new int, [](int* p) { delete p; });// 删除器是lambda表达式
+	
+function<void(int*)> f = DeleteIntPtr;
+shared_ptr<int> p2(new int, f); // 删除器是函数对象
+
+shared_ptr<int> p3(new int[10], [](int* p) { delete[] p; });   // 为指向数组的shared_ptr指定删除器
+	
+shared_ptr<int> p4(new int[10], std::default_delete<int[]>()); // 删除器是default_delete	
+```
+
+shared_ptr默认删除器是删除delete T对象的，并不是针对数组。如果要删除数组，就需要为数组指定delete[]删除器。或者，可以通过封装一个make_shared_array方法来让shared_ptr支持数组：
+
+```cpp
+template<typename T>
+shared_ptr<T> make_shared_array(size_t size) {
+	return shared_ptr<T>(new T[size], default_delete<T[]>());
+}
+// 使用make_shared_array，创建指向数组的shared_ptr
+shared_ptr<int> p = make_shared_array<int>(10);
+shared_ptr<char> p1 = make_shared_array<char>(10);
+```
+
+#### 使用shared_ptr的陷阱
+
+1. **不要将原始指针赋值给shared_ptr**
+
+```cpp
+shared_ptr<int> p = new int; // 编译错误
+```
+
+2. **不要将一个原始指针初始化多个shared_ptr**
+
+```cpp
+int* rawp = new int;
+shared_ptr<int> p1(rawp);
+shared_ptr<int> p2(rawp); // 逻辑错误，可能导致程序崩溃
+```
+
+3. **不要在函数实参中创建shared_ptr**
+
+```cpp
+void func(shared_ptr<int> p, int a);
+int g();
+
+func(shared_ptr<int>(new int), g()); // 有缺陷
+```
+
+由于C++的函数参数计算顺序在不同的编译器（不同的默认调用惯例）下，可能不一样，一般从右到左，也可能从左到右，因而可能的过程是先new int，然后调用g()。如果恰好g()发送异常，而shared_ptr 尚未创建，那么int内存就泄漏了。
+
+**正确写法是先创建智能指针，然后调用函数**：
+
+```cpp
+// 函数参数是shared_ptr时，正确写法
+shared_ptr<int> p(new int());
+f(p, g());
+```
+
+4. **通过shared_from_this()返回this指针。**不要将this指针作为shared_ptr返回出来，因为this本质是一个裸指针。因此，直接传this指针可能导致重复析构。
+
+​		例如，
+
+```cpp
+// 将this作为shared_ptr返回，从而导致重复析构的错误示例
+struct A {
+	shared_ptr<A> GetSelf() {
+		return shared_ptr<A>(this); // 不要这样做，可能导致重复析构
+	}
+	~A() {
+		cout << "~A()" << endl;
+	}
+};
+
+shared_ptr<A> p1(new A);
+shared_ptr<A> p2 = p1->GetSelf(); // A的对象将被析构2次，从而导致程序崩溃
+```
+
+本例中，用同一个指针（this）构造了2个智能指针p1, p2（两者无任何关联），离开作用域后，this会被构造的2个智能指针各自析构1次，从而导致重复析构的错误。
+
+正确返回this的shared_ptr做法：让目标类通过派生std::enable_shared_from_this类，然后使用base class的成员函数shared_from_this来返回this的shared_ptr。
+
+```cpp
+struct A : public enable_shared_from_this<A> {
+	shared_ptr<A> GetSelf() {
+		return shared_from_this();
+	}
+	~A() {
+		cout << "~A()" << endl;
+	}
+};
+
+shared_ptr<A> p1(new A);
+shared_ptr<A> p2 = p1->GetSelf(); // OK
+cout << p2.use_count() << endl;   // 打印2，注意这里会引起指向A的raw pointer对应的shared_ptr的引用计数+1
+```
+
+5. **避免循环引用。循环引用会导致内存泄漏。**
+
+   一个典型的循环引用case：
+
+```cpp
+struct A;
+struct B;
+
+struct A {
+	std::shared_ptr<B> bptr;
+	~A() { cout << "A is delete!" << endl; }
+};
+struct B {
+	std::shared_ptr<A> aptr;
+	~B() { cout << "B is delete!" << endl; }
+};
+
+void test() {
+	shared_ptr<A> ap(new A);
+	shared_ptr<B> bp(new B);
+	ap->bptr = bp;
+	bp->aptr = ap;
+	// A和B对象应该都被删除，然而实际情况是都不会被删除：没有调用析构函数
+}
+```
+
+解决循环引用的有效方法是使用weak_ptr。例子中，可以将A和B中任意一个成员变量，由shared_ptr修改为weak_ptr。
+
+### unique_ptr
+
+#### unique_ptr基本用法
+
+独占型智能指针，不允许与其他智能指针共享内部指针，不允许将一个unique_ptr赋值给另外一个unique_ptr。
+
+错误用法：
+
+```cpp
+// 将一个unique_ptr赋值给另外一个unique_ptr是错误的
+unique_ptr<int> p(new int);
+unique_ptr<int> p1 = p;            // 错误，unique_ptr不允许复制
+```
+
+正确用法：可以移动（std::move）。移动后，原来的unique_ptr不再拥有原来指针的所有权了，所有权移动给了新unique_ptr。
+
+```cpp
+unique_ptr<int> p(new int);
+unique_ptr<int> p1 = p;            // 错误，unique_ptr不允许复制
+unique_ptr<int> p2 = std::move(p); // OK
+```
+
+**自定义make_unique创建unique_ptr**
+shared_ptr有辅助方法make_shared可以创建智能指针，但C++11中没有类似的make_unique（C++14才提供）。
+自定义make_unique方法（需要在C++11环境下运行）：
+
+```cpp
+// 支持普通指针
+template<class T, class... Args> inline
+typename enable_if<!is_array<T>::value, unique_ptr<T>>::type
+make_unique(Args&&... args) {
+	return unique_ptr<T>(new T(std::forward<Args>(args)...));
+}
+
+// 支持动态数组
+template<class T> inline
+typename enable_if<is_array<T>::value && extent<T>::value==0, unique_ptr<T>>::type
+make_unique(size_t size) {
+	typedef typename remove_extent<T>::type U;
+	return unique_ptr<T>(new U[size]());
+}
+
+// 过滤掉定长数组的情况
+template<class T, class... Args>
+typename enable_if<extent<T>::value != 0, void>::type make_unique(Args&&...) = delete;
+
+// 使用自定义make_unique创建unique_ptr
+unique_ptr<int> p = make_unique<int>(10);
+cout << *p << endl;
+```
+
+#### unique_ptr与shared_ptr的区别
+
+如果希望同一时刻，只有一个智能指针管理资源，就用unique_ptr；如果希望多个智能指针管理同一个资源，就用shared_ptr。
+除了独占性外，unique_ptr与shared_ptr的区别：
+1）unique_ptr可以指向一个数组，shared_ptr不能
+
+```cpp
+unique_ptr<int []> ptr(new int[10]); // OK：智能指针ptr指向元素个数为10的int数组
+ptr[9] = 9; // 设置最后一个元素为9
+
+shared_ptr<int []> ptr(new int[10]); // 错误：C++11中，shared_ptr不能通过让模板参数为数组，从而让智能指针直接指向数组，因为默认删除器是delete，而数组需要delete[]（C++17中已经可用支持）
+```
+
+2）指定删除器时，不能像shared_ptr那样直接传入lambda表达式
+
+```cpp
+shared_ptr<int> p(new int(1), [](int* p) { delete p; });  // OK
+unique_ptr<int> p2(new int(1), [](int* p) { delete p; }); // 错误：为unique_ptr指定删除器时，需要确定删除器的类型
+```
+
+因为为unique_ptr指定删除器时，不能像shared_ptr那样，需要确定删除器的类型。像这样：
+
+```cpp
+unique_ptr<int, void(*)(int *)> p2(new int(1), [](int* p) { delete p; }); // OK
+```
+
+如果lambda表达式捕获了变量，这种写法就是错误的：
+
+```cpp
+unique_ptr<int, void(*)(int *)> p2(new int(1), [&](int* p) { delete p; }); // 错误：lambda无法转换为函数指针
+```
+
+因为lambda没有捕获变量时，可以直接转换为函数指针，而不会变量后，无法转换。
+如果希望unique_ptr删除器支持已不会变量的lambda，可以将模板实参由函数类型修改为std::function类型（可调用对象）：
+
+```cpp
+unique_ptr<int, function<void(int *)>> p2(new int(1), [&](int* p) { delete p; });
+```
+
+#### 自定义unique_ptr删除器
+
+```cpp
+#include <memory>
+#include <iostream>
+#include <functional>
+using namespace std;
+struct MyDeleter{
+	void operator()(int* p) {
+		cout << "delete" << endl;
+		delete p;
+	}
+};
+
+unique_ptr<int, MyDeleter> p(new int(1));
+cout << *p << endl;
+```
+
+### weak_ptr
+
+弱引用智能指针weak_ptr用来监视shared_ptr，不会引起引用计数变化，也不管理shared_ptr内部指针，主要为了监视shared_ptr生命周期。weak_ptr没有重载操作符*和->，因为不共享指针，不能操作资源。
+
+weak_ptr主要作用：
+1）监视shared_ptr管理的资源是否存在；
+2）用来返回this指针；
+3）解决循环引用问题；
+
+#### weak_ptr基本用法
+
+1）通过use_count() 获得当前观测资源的引用计数。
+
+```cpp
+shared_ptr<int> sp(new int(10));
+weak_ptr<int> wp(sp);
+cout << wp.use_count() << endl; // 打印1
+```
+
+2）通过expired() 判断所观测的资源释放已经被释放。
+
+```cpp
+{
+	shared_ptr<int> sp(new int(10)); // sp所指向内容非空
+	weak_ptr<int> wp(sp);
+	if (wp.expired()) {
+		cout << "weak_ptr 无效，所监视的智能指针已经被释放" << endl;
+	}
+	else
+		cout << "weak_ptr 有效" << endl; // 输出 "weak_ptr 有效"
+}
+{
+	shared_ptr<int> sp; // sp所指向的内容为空
+	weak_ptr<int> wp(sp);
+	if (wp.expired()) {
+		cout << "weak_ptr 无效，所监视的智能指针已经被释放" << endl; // 输出 "weak_ptr 无效..."
+	}
+	else
+		cout << "weak_ptr 有效" << endl;
+}
+```
+
+3）通过lock() 获取所监视的shared_ptr。
+
+```cpp
+weak_ptr<int> wp;
+void f() {
+	shared_ptr<int> sp(new int(10));
+	wp = sp;
+
+	if (wp.expired()) {
+		cout << "weak_ptr 无效，所监视的智能指针已经被释放" << endl;
+	}
+	else {
+		cout << "weak_ptr 有效" << endl; // 打印 "weak_ptr 有效"
+		auto spt = wp.lock();
+		cout << *spt << endl; // 打印10
+	}
+}
+```
+
+#### weak_ptr返回this指针
+
+上文提到不能直接将this指针返回为shared_ptr，需要通过继承enable_shared_from_this类，然后通过继承的shared_from_this()访问来返回智能指针。这是因为enable_shared_from_this类中有个weak_ptr，用于监测this智能指针，调用shared_from_this()方法时，会调用内部weak_ptr的lock()方法，将监测的shared_ptr返回。
+
+之前提到的那个例子：
+
+```cpp
+struct A : public std::enable_shared_from_this<A> {
+	std::shared_ptr<A> GetSelf() {
+		return shared_from_this();
+	}
+	~A() {
+		cout << "A is deleted" << endl;
+	}
+};
+
+shared_ptr<A> spy(new A);
+shared_ptr<A> p = spy->GetSelf(); // OK. 如果A不用继承自enable_shared_from_this类的方法，直接传this指针给shared_ptr，会导致重复析构的问题
+
+// 只会输出一次 "A is deleted"
+```
+
+#### weak_ptr解决循环引用问题
+
+前面提到shared_ptr存在的循环引用的经典问题：A类持有指向B对象的shared_ptr，B类持有指向A对象的shared_ptr，导致2个shared_ptr引用计数无法归0，从而导致shared_ptr所指向对象无法正常释放。
+
+```cpp
+struct A;
+struct B;
+
+struct A {
+	shared_ptr<B> bptr;
+	~A() { cout << "A is deleted" << endl; }
+};
+struct B {
+	shared_ptr<A> bptr;
+	~B() { cout << "B is deleted" << endl; }
+};
+
+void test() {
+	shared_ptr<A> pa(new A);
+	shared_ptr<B> pb(new B);
+	pa->bptr = pb;
+	pb->aptr = pa;
+} // 离开函数作用域后，A、B对象应该销毁，但事实没有被销毁，从而导致内存泄漏
+```
+
+用weak_ptr解决循环引用问题，具体方法是将A或B类中，shared_ptr类型修改为weak_ptr。
+
+```cpp
+struct A;
+struct B;
+
+struct A {
+	shared_ptr<B> bptr;
+	~A() { cout << "A is deleted" << endl; }
+};
+
+struct B {
+	weak_ptr<A> aptr; // 将B中指向A对象的智能指针，由shared_ptr修改为weak_ptr
+	~B() { cout << "B is deleted" << endl; }
+};
+
+void test() {
+	shared_ptr<A> pa(new A);
+	shared_ptr<B> pb(new B);
+	pa->bptr = pb;
+	pb->aptr = pa;
+} // OK
+```
+
+### 通过智能指针管理第三方库分配的内存
+
+第三方库提供的接口，通常是用的原始指针，而非智能指针。那么，我们在用完第三方库之后，如何通过智能指针管理第三方库分配的内存呢？
+
+我们先看第三方库一般的用法：
+
+```cpp
+// GetHandler()获取第三方库句柄
+// Create, Release是第三方库提供的资源创建、释放接口
+void* p = GetHandler()->Create();
+// do something...
+GetHandler()->Release();
+```
+
+实际上，上面这段代码是不安全的，原因在于：1）使用第三方库分配时，可能忘记调用Release接口；2）发生了异常，或者提前返回，实际并没有调用Release接口。从而导致资源无法正常释放。
+
+使用智能指针管理第三方库，不要显式调用释放接口，即使发生异常或者忘记调用，也能正常释放资源。
+如上面一般用法，可以改写成用智能指针的方式：
+
+```cpp
+// OK
+void* p = GetHandler()->Create();
+shared_ptr<void> sp(p, [this](void* p) { GetHandle()->Release(p); };
+```
+
+上面代码可以保证任何时候，都能正确释放第三方库分配的内存。虽然能解决问题，但还很繁琐，因为每个第三方库分配内存的地方，就要调用这段代码。可将这段代码提炼出来作为一个公共函数，以简化调用：
+
+```cpp
+// 存在安全隐患
+// 将创建智能指针，用于管理第三方库的代码段封装到一个函数
+shared_ptr<void> Guard(void* p) {
+	return shared_ptr<void> sp(p, [this](void* p) { GetHandler()->Release(p); });
+}
+
+void* p = GetHandler()->Create();
+auto sp = Guard(p);
+// do something with sp...
+```
+
+上面这段代码存在安全隐患：客户可能并不会利用Guard返回的临时shared_ptr，构造一个新的shared_ptr，这样p所创建的资源会立即释放。
+
+```cpp
+// 安全隐患演示
+void* p = GetHandler()->Create();
+Guard(p); // 该句结束后，p就会被释放
+// do something with p...
+```
+
+这种调用方式中，Guard(p)是一个右值，语句结束后创建的资源会立即释放，从而导致p提前释放，p成为野指针，而后面继续访问p可能导致程序异常。虽然用`auto sp = Guard(p);`赋值不存在问题，但是客户可能会忘记，也就是说这种写法不够安全。
+
+**如何解决由于忘记赋值导致指针提前释放的问题？**
+答：可以用一个宏来解决这个问题，通过宏来强制创建一个临时智能指针。代码如：
+
+```cpp
+// OK
+#define GUARD(p) std::shared_ptr<void> p##p(p, [](void* p) { GetHandler()->Release(p); })
+
+void* p = GetHandler()->Create();
+GUARD(p); // 安全：会在当前作用域下，创建名为pp的shared_ptr<void>
+```
+
+当然，如果只希望用独占性的管理第三方库的资源，可以用unique_ptr。
+
+```cpp
+// OK
+#define GUARD(p) std::unique_ptr<void, void(*)(int*)> p##p(p, [](void* p) { GetHandler()->Release(p); })
+```
+
+**小结：**
+1）使用宏定义方式的优势：即使忘记对智能指针赋值，也能正常运行，安全又方便。
+2）使用GUARD这种智能指针管理第三方库的方式，其本质是智能指针，能在各种场景下正确释放内存。
 
 
 
+## Lambda
 
+所谓Lambda是一份功能定义式，可以被定义于语句或表达式内部，因此可以将其当作内敛函数使用
 
-
-
+`[]{}`最简单的Lambda表达式
 
 
 
