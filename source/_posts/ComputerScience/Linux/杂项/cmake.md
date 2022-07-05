@@ -1,3 +1,5 @@
+## 从可执行文件到库目录
+
 ### 切换生成器
 
 ```shell
@@ -272,7 +274,7 @@ cmake_dependent_option(< dependent option variable> "help message" value1 "optio
 
 `value1` 为依赖选项变量的值
 
-`"dependent_option_variable"` 为被依赖选项变量 。
+`"option_variable"` 为被依赖选项变量 。
 
 `value2`为被依赖选项变量的值
 
@@ -505,7 +507,7 @@ $cmake -D CMAKE_BUILD_TYPE=Debug ..
 
 总结：
 
-1. 通过设置默认构建类型，来达到控制项目，使用使用优化编译，还是关闭优化启用调试。
+1. 通过设置默认构建类型，来达到控制项目，使用优化编译，还是关闭优化启用调试。
 2. 通过`CMakeLists.txt`文件中设置的默认构建类型，可用通过命令行`-D CMAKE_BUILD_TYPE=<build_type>`来进行覆盖
 
 **为不同的编译器和不同的构建类型，扩展或调整编译器标志。**
@@ -905,6 +907,498 @@ target_compile_definitions(hello-world PUBLIC
 
 ### 检测处理器指令集
 
+通过配置`config.h.in`来定义由`cmake`查询到的机器中的处理器指令集的信息，然后由`processor-info.cpp`来显示。
+
+`config.h.in`中的内容如下所示
+
+```c++
+#pragma once
+
+#define NUMBER_OF_LOGICAL_CORES @_NUMBER_OF_LOGICAL_CORES@
+#define NUMBER_OF_PHYSICAL_CORES @_NUMBER_OF_PHYSICAL_CORES@
+#define TOTAL_VIRTUAL_MEMORY @_TOTAL_VIRTUAL_MEMORY@
+#define AVAILABLE_VIRTUAL_MEMORY @_AVAILABLE_VIRTUAL_MEMORY@
+#define TOTAL_PHYSICAL_MEMORY @_TOTAL_PHYSICAL_MEMORY@
+#define AVAILABLE_PHYSICAL_MEMORY @_AVAILABLE_PHYSICAL_MEMORY@
+#define IS_64BIT @_IS_64BIT@
+#define HAS_FPU @_HAS_FPU@
+#define HAS_MMX @_HAS_MMX@
+#define HAS_MMX_PLUS @_HAS_MMX_PLUS@
+#define HAS_SSE @_HAS_SSE@
+#define HAS_SSE2 @_HAS_SSE2@
+#define HAS_SSE_FP @_HAS_SSE_FP@
+#define HAS_SSE_MMX @_HAS_SSE_MMX@
+#define HAS_AMD_3DNOW @_HAS_AMD_3DNOW@
+#define HAS_AMD_3DNOW_PLUS @_HAS_AMD_3DNOW_PLUS@
+#define HAS_IA64 @_HAS_IA64@
+#define OS_NAME "@_OS_NAME@"
+#define OS_RELEASE "@_OS_RELEASE@"
+#define OS_VERSION "@_OS_VERSION@"
+#define OS_PLATFORM "@_OS_PLATFORM@"
+```
+
+`processor-info.cpp`的代码如下
+
+```c++
+#include "config.h"
+
+#include <cstdlib>
+#include <iostream>
+
+int main()
+{
+    std::cout << "Number of logical cores: "
+              << NUMBER_OF_LOGICAL_CORES << std::endl;
+    std::cout << "Number of physical cores: "
+              << NUMBER_OF_PHYSICAL_CORES << std::endl;
+    std::cout << "Total virtual memory in megabytes: "
+              << TOTAL_VIRTUAL_MEMORY << std::endl;
+    std::cout << "Available virtual memory in megabytes: "
+              << AVAILABLE_VIRTUAL_MEMORY << std::endl;
+    std::cout << "Total physical memory in megabytes: "
+              << TOTAL_PHYSICAL_MEMORY << std::endl;
+    std::cout << "Available physical memory in megabytes: "
+              << AVAILABLE_PHYSICAL_MEMORY << std::endl;
+    std::cout << "Processor is 64Bit: "
+              << IS_64BIT << std::endl;
+    std::cout << "Processor has floating point unit: "
+              << HAS_FPU << std::endl;
+    std::cout << "Processor supports MMX instructions: "
+              << HAS_MMX << std::endl;
+    std::cout << "Processor supports Ext. MMX instructions: "
+           << HAS_MMX_PLUS << std::endl;
+    std::cout << "Processor supports SSE instructions: "
+              << HAS_SSE << std::endl;
+    std::cout << "Processor supports SSE2 instructions: "
+              << HAS_SSE2 << std::endl;
+    std::cout << "Processor supports SSE FP instructions: "
+              << HAS_SSE_FP << std::endl;
+    std::cout << "Processor supports SSE MMX instructions: "
+              << HAS_SSE_MMX << std::endl;
+    std::cout << "Processor supports 3DNow instructions: "
+              << HAS_AMD_3DNOW << std::endl;
+    std::cout << "Processor supports 3DNow+ instructions: "
+              << HAS_AMD_3DNOW_PLUS << std::endl;
+    std::cout << "IA64 processor emulating x86 : "
+              << HAS_IA64 << std::endl;
+    std::cout << "OS name: "
+              << OS_NAME << std::endl;
+    std::cout << "OS sub-type: "
+              << OS_RELEASE << std::endl;
+    std::cout << "OS build ID: "
+              << OS_VERSION << std::endl;
+    std::cout << "OS platform: "
+              << OS_PLATFORM << std::endl;
+    return EXIT_SUCCESS;
+}
+```
+
+`CMakeLists.txt`
+
+```cmake
+cmake_mininum_required(VERSION 3.10 FATAL_ERROR)
+project(processor-info
+	VERSION 1.0.0
+	DESCRIPTION "查询当前机器的处理器指令集"
+	HOMEPAGE_URL "www.gunfirefc.top"
+	LANGUAGES CXX)
+add_executable(processor-info "")
+target_sources(processor-info
+	PRIVATE
+		processor-info.cpp)
+target_include_directories(processor-info
+	PRIVATE
+		${PROJECT_BINARY_DIR})
+foreach(key IN ITEMS
+  	    NUMBER_OF_LOGICAL_CORES
+        NUMBER_OF_PHYSICAL_CORES
+        TOTAL_VIRTUAL_MEMORY
+        AVAILABLE_VIRTUAL_MEMORY
+        TOTAL_PHYSICAL_MEMORY
+        AVAILABLE_PHYSICAL_MEMORY
+        IS_64BIT
+        HAS_FPU
+        HAS_MMX
+        HAS_MMX_PLUS
+        HAS_SSE
+        HAS_SSE2
+        HAS_SSE_FP
+        HAS_SSE_MMX
+        HAS_AMD_3DNOW
+        HAS_AMD_3DNOW_PLUS
+        HAS_IA64
+        OS_NAME
+        OS_RELEASE
+        OS_VERSION
+        OS_PLATFORM
+        )
+        cmake_host_system_information(RESULT _${key} QUERY ${key})
+endforeach()
+configure_file(config.h.in config.h @ONLY)
+```
+
+​        `cmake_host_system_information(RESULT _${key} QUERY ${key})`
+
+`configure_file(config.h.in config.h @ONLY)`
+
+构建源文件
+
+```sh
+$mkdir build && cd build
+$cmake ..
+$cmake --build ..
+$./processor-info
+# 如果想要查看不同platform和不同genarator的处理器指令集
+$cmake -G "MinGW Makefiles" .. # 使用的是windows中的MinGW生成器来编译源文件
+$cmake -G "Vuisual Studio 7" .. # 使用Macrosoft的生成器
+# 如果不知道cmake支持那些生成器，可以使用如下命令
+$cmake --help
+```
+
+编译结果:
+
+在Linux中编译
+
+```sh
+Number of logical cores: 12
+Number of physical cores: 6
+Total virtual memory in megabytes: 2048
+Available virtual memory in megabytes: 2048
+Total physical memory in megabytes: 6218
+Available physical memory in megabytes: 3860
+Processor is 64Bit: 1
+Processor has floating point unit: 1
+Processor supports MMX instructions: 1
+Processor supports Ext. MMX instructions: 0
+Processor supports SSE instructions: 1
+Processor supports SSE2 instructions: 1
+Processor supports SSE FP instructions: 0
+Processor supports SSE MMX instructions: 0
+Processor supports 3DNow instructions: 0
+Processor supports 3DNow+ instructions: 0
+IA64 processor emulating x86 : 0
+OS name: Linux
+OS sub-type: 5.10.102.1-microsoft-standard-WSL2
+OS build ID: #1 SMP Wed Mar 2 00:30:59 UTC 2022
+OS platform: x86_64
+```
+
+在windows中的编译
+
+```sh
+Number of logical cores: 12
+Number of physical cores: 6
+Total virtual memory in megabytes: 13423
+Available virtual memory in megabytes: 2797
+Total physical memory in megabytes: 8047
+Available physical memory in megabytes: 1046
+Processor is 64Bit: 1
+Processor has floating point unit: 1
+Processor supports MMX instructions: 1
+Processor supports Ext. MMX instructions: 0
+Processor supports SSE instructions: 1
+Processor supports SSE2 instructions: 1
+Processor supports SSE FP instructions: 0
+Processor supports SSE MMX instructions: 0
+Processor supports 3DNow instructions: 0
+Processor supports 3DNow+ instructions: 0
+IA64 processor emulating x86 : 0
+OS name: Windows
+OS sub-type:  Professional
+OS build ID:  (Build 19043)
+OS platform: AMD64
+```
+
+
+
+### 为Eigen库使能向量化
+
+$处理器的向量功能可以提高代码的性能，对于某些类型的运算更为高效，例如：线性代数$
+
+使用开源库`Eigen`来展示，如何使能向量化，以便于使用线性代数的Eigen C++库加速可执行文件。
+
+#### 安装`Eigen`库
+
+1. [3.4.0 · libeigen / eigen · GitLab](https://gitlab.com/libeigen/eigen/-/releases/3.4.0)
+2. 解压源码
+3. Eigen库的两种安装方法
+   1. 将Eigen源码中的Eigen目录直接复制到指定的工程目录中即可
+   2. 用cmake编译
+
+#### 使用Eigen库的一个样例
+
+`linear-algebra.cpp`
+
+```CPP
+#include <chrono>
+#include <iostream>
+
+#include "Eigen/Dense"
+
+EIGEN_DONT_INLINE 
+double simple_function(Eigen::VectorXd &va, Eigen::VectorXd &vb)
+{
+    double d= va.dot(vb);
+    return d;
+}
+
+int main() 
+{
+    int len=1000000;
+    int num_repetitions = 100;
+
+    Eigen::VectorXd va = Eigen::VectorXd::Random(len);
+    Eigen::VectorXd vb = Eigen::VectorXd::Random(len);
+
+    double result;
+    auto start = std::chrono::system_clock::now();
+    for(auto i = 0; i < num_repetitions;i++)
+    {
+        result = simple_function(va, vb);
+    }
+    auto end = std::chrono::system_clock::now();
+    auto elapsed_senconds = end-start;
+
+    std::cout <<"result: "<<result<<std::endl;
+    std::cout << "elapsed seconds: "<<elapsed_senconds.count()<<std::endl;
+    
+}
+```
+
+`CMakeLists.txt`
+
+```cmake
+cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
+
+project(linear-algebra LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 11)
+set(CMKAE_CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_STANDARD_REQUIRED on)
+
+include(CheckCXXCompilerFlag)
+check_cxx_compiler_flag("-march=native" _march_native_works)
+check_cxx_compiler_flag("-xHost" _xhost_works)
+
+set(_CXX_FLAGS )
+if(_march_native_works)
+    message(STATUS "Using processor's vector instructions (-march=native compiler flag set)")
+    set(_CXX_FLAGS "-march=native")
+elseif(_xhost_works)
+    message(STATUS "Using processor's vector instructions (-xHost compiler flag set)")
+    set(_CXX_FLAGS "-xHost")
+else()
+    message(STATUS "No suitable compiler flag found for vectorization")
+endif()
+
+add_executable(linear-algebra-optimaze linear-algebra.cpp)
+
+target_compile_options(linear-algebra-optimaze 
+    PRIVATE 
+        ${_CXX_FLAGS})
+```
+
+编译
+
+```sh
+$mkdir build && cd build
+$cmake ..
+-- The CXX compiler identification is GNU 11.2.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Performing Test _march_native_works
+-- Performing Test _march_native_works - Success
+-- Performing Test _xhost_works
+-- Performing Test _xhost_works - Failed
+-- Using processor's vector instructions (-march=native compiler flag set)
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /mnt/f/Station/Linux_Proj/vscodeProj/cmake/demo04/build
+```
+
+运行
+
+```sh
+# 不带优化编译选项的执行程序
+$./linear-algebra-unoptimaze
+
+result: -261.505
+elapsed seconds: 2012780600
+
+# 带优化编译选项的执行程序
+$./linear-algebra-optimaze
+
+result: -261.505
+elapsed seconds: 801839700
+```
+
+#### 工作原理
+
+大多数处理器提供向量指令集，代码可以利用这些特性，获得更高的性能。由于线性代数运算可以从Eigen库中获得很好的加速，所以在使用Eigen库时，就要考虑向量化。我们所要做的就是，指示编译器为我们检查处理器，并为当前体系结构生成本机指令。不同的编译器供应商会使用不同的标志来实现这一点：GNU编译器使用` -march=native `标志来实现这一点，而Intel编译器使用 `-xHost `标志。使用 `CheckCXXCompilerFlag.cmake `模块提供的 `check_cxx_compiler_flag `函数进行编译器标志的检查:
+
+`check_cxx_compiler_flag("-march=native" _march_native_works)`
+
+这个函数接受两个参数:
+
+- 第一个是要检查的编译器标志。
+
+- 第二个是用来存储检查结果(true或false)的变量。如果检查为真，我们将工作标志添加到 _CXX_FLAGS 变量中，该变量将用于为可执行目标设置编译器标志。
+
+## 检测外部库和程序
+
+### 预备知识
+
+1. 获取`cmake`现有模块列表命令    ` cmake --help-module-list`
+2. 显示`cmake`内置命令的打印文档   `cmake --help-command-list`
+3. 显示`cmake`某个内置命令的详细说明 `cmake --help-command <command>`
+4. `find`家族命令
+   - `find_file` 在对应路径下查找命名文件
+   - `find_library` 查找一个库目录
+   - `find_package` 从外部项目查找和加载设置
+   - `find_path` 查找包含指定文件的目录
+   - `find_program` 找到一个可执行程序
+
+### 检测python解释器
+
+```cmake
+cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
+project(findPython LANGUAGES NONE)
+# 查找python解释器
+find_package(PythonInterp REQUIRED)
+# 执行Python命令并捕获他的输出和返回值
+execute_process(
+    COMMAND
+        ${PYTHON_EXECUTABLE} "-c" "print('Hello, world')"
+    RESULT_VARIABLE _status
+    OUTPUT_VARIABLE _hello_world
+    ERROR_QUIET
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+# 打印Python命令的输出和返回值
+message(STATUS "RESULT_VARIABLE is <${_status}>")
+message(STATUS "OUTPUT_VARIABLE is <${_hello_world}>")
+```
+
+运行如下命令：
+
+```sh
+$mkdir -p build && cd build
+$cmake ..
+```
+
+运行结果:
+
+```sh
+-- Found PythonInterp: /usr/bin/python3.8 (found version "3.8.10")
+-- RESULT_VARIABLE is <0>
+-- OUTPUT_VARIABLE is <Hello, world>
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /mnt/f/Station/Linux_Proj/vscodeProj/cmake/chapter_3/01_FindPython/build
+```
+
+`FindPythonInterp.cmake`包中附带`cmake`变量
+
+- `PYTHONINTERP_FOUND`  是否找到python解释器
+- `PYTHON_EXECUTABLE` Python解释器到可执行文件的路径
+- `PYTHON_VERSION_STRING` Python解释器的完整版本信息
+- `PYTHON_VERSION_MAJOR` Python解释器的主版本号
+- `PYTHON_VERSION_MINOR` Python解释器的次版本号
+- `PYTHON_VERSION_PATCH` Python解释器的补丁版本号
+
+使用`-D`选项来指定Python解释器
+
+- `cmake -D PYTHON_EXECUTABLE=custom/location/python ..`
+
+- `cmake --help-module FindPythonInterp` 查看`PtyonInterp`包的说明
+
+使用`CMakePrintHelpers`模块来格式化打印变量
+
+```cmake
+include(CMakePrintHelper)
+cmake_print_variables(var1 var2 ...)
+```
+
+### 检测python库
+
+可以使用Python工具来分析和操作程序的输出。然而，还有更强大的方法可以将解释语言(如Python)与编译语言(如C或C++)组合在一起使用。一种是扩展Python，通过编译成共享库的C或C++模块在这些类型上提供新类型和新功能，这是第9章的主题。另一种是将Python解释器嵌入到C或C++程序中。两种方法都需要下列条件:
+
+- Python解释器的工作版本
+- Python头文件Python.h的可用性
+- Python运行时库libpython
+
+在C语言中嵌入python代码,如下所示
+
+```c
+#include <Python.h>
+
+int main(int argc, char* argv[])
+{
+    Py_SetProgramName((wchar_t *)argv[0]);
+    Py_Initialize();
+    PyRun_SimpleString("from time import time, ctime\n"
+                       "print('Today is', ctime(time()))\n");
+    Py_Finalize();
+    return 0;
+}
+```
+
+在`CMakeLists.txt`中查找`Python`的解释器、开发环境（包括头文件路径、库目录路径等...）、编译器
+
+```cmake
+cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
+
+project(hello-embeded-py LANGUAGES C)
+
+set(CMAKE_C_STANDARD 99)
+set(CMAKE_C_EXTENSIONS OFF)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+
+# 查找python解释器，"REQUIRED"表示当前查找的包是必要的
+find_package(PythonInterp REQUIRED)
+
+# 查找Python的头文件和库目录, "EXACT"表示限制CMAKE检测指定的版本
+find_package(PythonLibs ${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR} EXACT REQUIRED)
+
+# 在3.12以上的cmake ，可以使用find_packege的新的python检测模块替换以上两条命令
+# find_package(Python COMPONENTS Interpreter Development REQUIRED)
+
+# message(STATUS "Sytem has the Python requested components: ${Python_FOUND}")
+# message(STATUS "Sytem has the Python interpreter: ${Python_Interpreter_FOUND}")
+# message(STATUS "Path to the Python interpreter: ${Python_EXECUTABLE}")
+# message(STATUS "A short stirng unique to the interpreter: ${Python_INTERPRETER_ID}")
+# message(STATUS "Standard platform dependent installation directory: ${Python_STDLIB}")
+# message(STUATS "Standard platform dependent installation directory: ${Python_STDARCH}")
+# message(STATUS "Third-parity platform independent installation directory: ${Python_SITELIB}")
+# message(STATUS "Third-party platform dependent installation directory: ${Python_SITEARCH}")
+# message(STATUS "System has the Python developments artifacts: ${Python_Development_FOUND}")
+# message(STATUS "The Python include directories: ${Python_INCLUDE_DIRS}")
+# message(STATUS "The Python library directories: ${Python_LIBRARY_DIRS}")
+# message(STATUS "The Python libraries: ${Python_LIBRARIES}")
+# message(STATUS "The Python runtiome library directories: ${Python_RUNTIME_LIBRARY_DIRS}")
+
+
+# 添加一个可执行目标
+add_executable(hello-embeded-py hello-embeded-py.c)
+
+# 可执行文件包含python.h
+target_include_directories(hello-embeded-py PRIVATE ${PYTHON_INCLUDE_DIRS})
+
+# 将可执行文件连接到Python库
+target_link_libraries(hello-embeded-py PRIVATE ${PYTHON_LIBRARIES})
+
+```
+
+ 如果你的python不是安装在标准路径，则需要使用`CMAKE`脚手架的`-D`来指定python的解释器，头文件以及库，如下所示
+
+```sh
+$cmake -D PYTHON_EXECUTABLE=custom/path/pythonInterp -D PYTHON_LIBRARY=custom/path/pythonlibs -D PYTHON_INCLUDE_DIR=custom/path/pythoninclude
+```
+
+### 检测Python模块和包
 
 
 
@@ -912,6 +1406,103 @@ target_compile_definitions(hello-world PUBLIC
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## 总结
+
+### 命令行总结
+
+#### 第一章
+
+1. `cmake -H. -Bbuild`  等价于 `cd build && cmake ..`
+2. `cmake --build .` 构建当前目录中的项目
+3. `cmake --build . --target <target-name>` 
+   - `all`是默认目标，将在项目中构建所有的目标
+   - `clean`删除所有的生成文件
+   - `rebuild_cache` 将调用CMake为源文件生成依赖
+   - `edit_cache` 这个目标允许直接编辑缓存
+   - `test` 在`CTest`的帮助下运行测试套件
+   - `install` 执行目录安装规则
+   - `package` 此目标将调用`CPack`为目录生成可发布的包
+   - `help`
+
+4. `cmake --help` 查看`cmake`支持的生成器
+5. `cmake -G <Generator>` 切换Generator
+6. `cmake --help-module <name-of-moudle>` 打印某个模块的手册页
+7. `cmake -D [<custom-option>|<cmake-environ-varible>]=<value>`
+8. `cmake --build . --config Rlease`  切换构建版本，如果项目中同时配置了`Release`和`Debug`两个版本
+
+#### 第三章
+
+
+
+
+
+
+
+
+
+ 	
 
 
 

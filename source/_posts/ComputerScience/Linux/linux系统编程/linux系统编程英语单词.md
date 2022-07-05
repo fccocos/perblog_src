@@ -27,4 +27,5 @@
 21. page table 页表
 22. swap area 交换区
 23. PMMU(Page Memory Manager Unit)  分页内存管理单元
-24. 
+24. optimize *['ɒptɪmaɪz]*  优化
+25. 
